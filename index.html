@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grupo Empresarial — Eurocable · Heatcable</title>
+  <meta name="description" content="Grupo empresarial: soluciones de climatización y protección eléctrica para Latinoamérica." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="home.css" />
+</head>
+<body class="home">
+
+  <!-- Fondo degradado: dos capas que se cruzan en fundido
+       cuando cambia la empresa activa (el JS las pinta) -->
+  <div class="bg bg-a is-on" aria-hidden="true"></div>
+  <div class="bg bg-b" aria-hidden="true"></div>
+
+  <main class="scene">
+    <section class="card" id="card" aria-live="polite">
+
+      <header class="topbar">
+        <a class="brand" id="brand" href="#"></a>
+        <nav class="tabs" id="tabs" aria-label="Empresas del grupo"></nav>
+        <span class="counter" id="counter"></span>
+      </header>
+
+      <div class="swap-zone" id="swap-zone">
+        <div class="showcase">
+          <div class="col col-left">
+            <div class="pager">
+              <button class="nav-arrow" id="prev" type="button" aria-label="Empresa anterior">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>
+              </button>
+              <button class="nav-arrow" id="next" type="button" aria-label="Empresa siguiente">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg>
+              </button>
+            </div>
+            <span class="eyebrow" id="rubro"></span>
+            <h1 class="title" id="nombre"></h1>
+            <p class="desc" id="desc"></p>
+            <a class="cta" id="cta" href="#">
+              Conocer empresa
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 1 5 5-5 5"/></svg>
+            </a>
+          </div>
+
+          <div class="col col-center">
+            <div class="plate-wrap">
+              <div class="plate"><img id="logo" src="" alt="" /></div>
+              <div class="plate-shadow" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="col col-right">
+            <div class="figures" id="figures"></div>
+            <div class="presence">
+              <span class="presence-label">Presencia</span>
+              <div class="flags" id="flags"></div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="baseline">
+          <a class="weblink" id="weblink" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c1.8 1.7 2.7 3.9 2.7 6.2S9.8 12.5 8 14.2M8 1.8C6.2 3.5 5.3 5.7 5.3 8s.9 4.5 2.7 6.2"/></svg>
+            <span id="weblink-text"></span>
+          </a>
+          <p class="tagline" id="tagline"></p>
+          <button class="next-thumb" id="next-thumb" type="button">
+            <span class="thumb-plate"><img id="thumb-logo" src="" alt="" /></span>
+            <span class="thumb-meta">
+              <small>Siguiente</small>
+              <strong id="thumb-name"></strong>
+            </span>
+          </button>
+        </footer>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script>
+    /* ============================================================
+       Vitrina del grupo — todo se genera desde data.js.
+       Agregar una empresa nueva = agregar un objeto más a EMPRESAS:
+       las píldoras, flechas, contador y colores se ajustan solos.
+       ============================================================ */
+
+    var $ = function (id) { return document.getElementById(id); };
+    var N = EMPRESAS.length;
+    var actual = 0;
+    var animando = false;
+
+    document.title = HOLDING.nombre + " — Grupo Empresarial";
+    $("brand").textContent = HOLDING.nombre;
+
+    /* ---------- Color: paleta derivada del acento (PALETA vive en data.js) ---------- */
+
+    /* Fundido entre capas de fondo (los degradados no se transicionan) */
+    function pintarFondo(p) {
+      var vieja = document.querySelector(".bg.is-on");
+      var nueva = document.querySelector(".bg:not(.is-on)");
+      nueva.style.background =
+        "linear-gradient(150deg, " + p.gradC + " 0%, " + p.gradA + " 48%, " + p.gradB + " 100%)";
+      nueva.classList.add("is-on");
+      vieja.classList.remove("is-on");
+    }
+
+    function pintarTema(e) {
+      var p = PALETA(e.acento);
+      var raiz = document.documentElement.style;
+      raiz.setProperty("--card", p.card);
+      raiz.setProperty("--deep", p.deep);
+      pintarFondo(p);
+    }
+
+    /* ---------- Contenido ---------- */
+
+    // Cifras destacadas: las dos primeras de trayectoria; si la empresa
+    // no publica cifras, se calculan desde sus países y catálogo.
+    function cifrasDe(e) {
+      if (e.trayectoria && e.trayectoria.cifras) return e.trayectoria.cifras.slice(0, 2);
+      return [
+        { valor: String(e.paises.length), unidad: e.paises.length === 1 ? "país" : "países" },
+        { valor: String(e.catalogo.length), unidad: "líneas de producto" }
+      ];
+    }
+
+    function dosDigitos(n) { return (n < 9 ? "0" : "") + (n + 1); }
+
+    function render(i) {
+      var e = EMPRESAS[i];
+      var sig = EMPRESAS[(i + 1) % N];
+
+      $("counter").textContent = dosDigitos(i) + " / " + (N < 10 ? "0" + N : N);
+      $("rubro").textContent = e.rubro;
+      $("nombre").textContent = e.nombre;
+      $("desc").textContent = e.descripcionCorta;
+      $("cta").href = e.pagina;
+
+      $("logo").src = e.logo;
+      $("logo").alt = "Logo de " + e.nombre;
+
+      $("figures").innerHTML = cifrasDe(e).map(function (c) {
+        return '<div class="figure"><span class="value">' + c.valor + "</span>" +
+               '<span class="unit">' + c.unidad + "</span></div>";
+      }).join("");
+
+      $("flags").innerHTML = e.paises.map(function (p) {
+        var titulo = p.nombre + (p.ciudad ? " — " + p.ciudad : "");
+        return '<span class="flag-dot" title="' + titulo + '">' + (BANDERAS[p.codigo] || "") + "</span>";
+      }).join("");
+
+      $("weblink").href = e.web;
+      $("weblink-text").textContent = e.web.replace(/^https?:\/\/(www\.)?/, "").replace(/\/.*$/, "");
+      $("tagline").textContent = "“" + e.tagline + "”";
+
+      $("thumb-logo").src = sig.logo;
+      $("thumb-logo").alt = "";
+      $("thumb-name").textContent = sig.nombre;
+      $("next-thumb").setAttribute("aria-label", "Siguiente empresa: " + sig.nombre);
+
+      var pills = document.querySelectorAll(".tab");
+      for (var k = 0; k < pills.length; k++) {
+        pills[k].classList.toggle("is-active", k === i);
+        pills[k].setAttribute("aria-pressed", k === i ? "true" : "false");
+      }
+    }
+
+    function irA(i) {
+      i = (i + N) % N;
+      if (animando || i === actual) return;
+      animando = true;
+      actual = i;
+      pintarTema(EMPRESAS[i]); // el color empieza a fundirse ya
+      $("card").classList.add("is-swapping");
+      setTimeout(function () {
+        render(i);
+        $("card").classList.remove("is-swapping");
+        animando = false;
+      }, 270);
+    }
+
+    /* ---------- Navegación ---------- */
+
+    $("tabs").innerHTML = EMPRESAS.map(function (e, i) {
+      return '<button class="tab" type="button" data-i="' + i + '" aria-pressed="false">' + e.nombre + "</button>";
+    }).join("");
+
+    $("tabs").addEventListener("click", function (ev) {
+      var b = ev.target.closest(".tab");
+      if (b) irA(parseInt(b.dataset.i, 10));
+    });
+
+    $("prev").addEventListener("click", function () { irA(actual - 1); });
+    $("next").addEventListener("click", function () { irA(actual + 1); });
+    $("next-thumb").addEventListener("click", function () { irA(actual + 1); });
+
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key === "ArrowLeft") irA(actual - 1);
+      if (ev.key === "ArrowRight") irA(actual + 1);
+    });
+
+    /* ---------- Arranque ---------- */
+    pintarTema(EMPRESAS[0]);
+    render(0);
+  </script>
+</body>
+</html>
