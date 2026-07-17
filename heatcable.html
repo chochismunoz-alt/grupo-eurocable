@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heatcable — Climatización y Protección Eléctrica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="home.css" />
+</head>
+<body class="detail" data-empresa="heatcable">
+
+  <!-- Fondo degradado con el acento de la empresa (lo pinta el JS). -->
+  <div class="bg is-on" aria-hidden="true"></div>
+
+  <div class="detail-wrap">
+    <header class="detail-topbar">
+      <a class="back-pill" href="#" id="back-link">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 1 4 6l5 5"/></svg>
+        <span id="back-label">Volver</span>
+      </a>
+      <span class="detail-brand" id="header-brand"></span>
+    </header>
+
+    <main id="detail-main" style="display: contents;"></main>
+
+    <footer class="detail-foot" id="detail-footer"></footer>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    /* Template de detalle — idéntico en todas las páginas de empresa.
+       Lee el id desde <body data-empresa="..."> y renderiza desde data.js
+       con la misma piel de la vitrina del grupo (home.css + PALETA). */
+    (function () {
+      var e = EMPRESAS.find(function (x) { return x.id === document.body.dataset.empresa; });
+      if (!e) return;
+
+      // Escena teñida con el acento de la empresa, igual que en el home
+      var p = PALETA(e.acento);
+      var raiz = document.documentElement.style;
+      raiz.setProperty("--card", p.card);
+      raiz.setProperty("--deep", p.deep);
+      document.querySelector(".bg").style.background =
+        "linear-gradient(150deg, " + p.gradC + " 0%, " + p.gradA + " 48%, " + p.gradB + " 100%)";
+
+      document.title = e.nombre + " — " + e.rubro;
+      document.getElementById("back-link").href = HOLDING.pagina;
+      document.getElementById("back-label").textContent = "Volver a " + HOLDING.nombre;
+      document.getElementById("header-brand").textContent = e.nombre;
+
+      var html = "";
+      var i = 0; // índice de tarjeta para la entrada escalonada
+
+      function abrir(etiqueta) {
+        i++;
+        return '<section class="card" style="--i:' + i + '">' +
+               (etiqueta ? '<div class="sec-label"><span class="eyebrow">' + etiqueta + "</span></div>" : "");
+      }
+
+      // Hero: titular + tagline + sitio oficial, placa metálica al lado
+      html +=
+        abrir("") +
+          '<div class="detail-hero">' +
+            "<div>" +
+              '<span class="eyebrow">' + e.rubro + "</span>" +
+              '<h1 class="title">' + e.nombre + "</h1>" +
+              '<p class="desc">' + e.tagline + "</p>" +
+              '<a class="cta" href="' + e.web + '" target="_blank" rel="noopener">Sitio oficial' +
+                '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9 9 3M4 3h5v5"/></svg>' +
+              "</a>" +
+            "</div>" +
+            '<div class="plate-wrap">' +
+              '<div class="plate"><img src="' + e.logo + '" alt="Logo de ' + e.nombre + '" /></div>' +
+              '<div class="plate-shadow" aria-hidden="true"></div>' +
+            "</div>" +
+          "</div>" +
+        "</section>";
+
+      // Países donde opera
+      html +=
+        abrir(e.paises.length > 1 ? "Dónde operamos" : "Dónde estamos") +
+          '<div class="tiles tiles-sm">' +
+          e.paises.map(function (pa) {
+            return (
+              '<article class="tile">' +
+                '<div class="flag-row">' +
+                  '<span class="flag">' + (BANDERAS[pa.codigo] || "") + "</span>" +
+                  '<span class="name">' + pa.nombre + "</span>" +
+                "</div>" +
+                '<span class="city">' + pa.ciudad + "</span>" +
+                (pa.nota ? '<span class="note">' + pa.nota + "</span>" : "") +
+              "</article>"
+            );
+          }).join("") +
+          "</div>" +
+        "</section>";
+
+      /* ⚠️ PENDIENTE: sección Misión y Visión.
+         No están publicadas en el sitio actual de la empresa.
+         Cuando se confirmen los textos, cargarlos en data.js
+         (campos "mision" y "vision") y esta sección aparecerá sola. */
+      if (e.mision || e.vision) {
+        html +=
+          abrir("Misión y visión") +
+            '<div class="tiles">' +
+            (e.mision ? '<article class="tile"><h3>Misión</h3><p>' + e.mision + "</p></article>" : "") +
+            (e.vision ? '<article class="tile"><h3>Visión</h3><p>' + e.vision + "</p></article>" : "") +
+            "</div>" +
+          "</section>";
+      }
+
+      // Catálogo
+      html +=
+        abrir("Qué ofrecemos") +
+          '<div class="tiles">' +
+          e.catalogo.map(function (c) {
+            return (
+              '<article class="tile">' +
+                "<h3>" + c.titulo + "</h3>" +
+                "<p>" + c.descripcion + "</p>" +
+                "<ul>" + c.items.map(function (it) { return "<li>" + it + "</li>"; }).join("") + "</ul>" +
+              "</article>"
+            );
+          }).join("") +
+          "</div>" +
+        "</section>";
+
+      // Representaciones oficiales (solo si existen)
+      if (e.representaciones && e.representaciones.length) {
+        html +=
+          abrir("Representaciones oficiales") +
+            '<div class="tiles">' +
+            e.representaciones.map(function (r) {
+              return (
+                '<article class="tile">' +
+                  '<span class="rep-icon">' + ICONOS[r.icono] + "</span>" +
+                  '<span class="rep-name">' + r.nombre + "</span>" +
+                  '<span class="rep-rubro">' + r.rubro + "</span>" +
+                  "<p>" + r.descripcion + "</p>" +
+                "</article>"
+              );
+            }).join("") +
+            "</div>" +
+          "</section>";
+      }
+
+      // Trayectoria / historia (solo datos confirmados)
+      /* ⚠️ PENDIENTE: año de fundación e historia detallada.
+         Cargar en data.js (campo "fundacion") cuando se confirme. */
+      if (e.trayectoria) {
+        html +=
+          abrir(e.trayectoria.titulo) +
+            '<div class="stats">' +
+            e.trayectoria.cifras.map(function (s) {
+              return (
+                '<article class="stat">' +
+                  '<span class="value">' + s.valor + "</span>" +
+                  '<span class="unit">' + s.unidad + "</span>" +
+                  '<span class="detail-txt">' + s.detalle + "</span>" +
+                "</article>"
+              );
+            }).join("") +
+            "</div>" +
+            '<p class="stats-note">' + e.trayectoria.nota + "</p>" +
+          "</section>";
+      }
+
+      document.getElementById("detail-main").innerHTML = html;
+      document.getElementById("detail-footer").innerHTML =
+        e.nombre + " · " + HOLDING.nombre + ' · <a href="' + e.web + '" target="_blank" rel="noopener">Sitio actual ↗</a>';
+    })();
+  </script>
+</body>
+</html>

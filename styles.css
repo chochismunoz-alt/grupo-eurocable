@@ -1,0 +1,699 @@
+/* ============================================================
+   STYLES.CSS — compartido por index, eurocable y heatcable.
+   Dirección: premium, minimalista, editorial industrial.
+   Paleta restringida: fondo cálido + blanco + tintas + un acento.
+   ============================================================ */
+
+:root {
+  --bg: #e9e7e1;
+  --panel: #ffffff;
+  --ink: #17181a;
+  --ink-2: #4b4d51;
+  --muted: #8a8d91;
+
+  /* Acento único: cobre envejecido. Las páginas de detalle lo
+     sobreescriben con el acento puntual de cada empresa. */
+  --accent: #a9744f;
+  --accent-deep: #8a5e3f;
+
+  --radius-panel: 26px;
+  --radius-card: 110px;
+  --shadow-soft: 0 18px 50px -18px rgba(23, 24, 26, 0.18), 0 4px 14px -6px rgba(23, 24, 26, 0.08);
+  --shadow-lift: 0 30px 60px -20px rgba(23, 24, 26, 0.28), 0 8px 20px -8px rgba(23, 24, 26, 0.12);
+
+  --font-display: "Fraunces", serif;
+  --font-ui: "Manrope", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  color: var(--ink);
+  background-color: var(--bg);
+  /* Manchas radiales muy sutiles sobre el gris cálido */
+  background-image:
+    radial-gradient(560px 420px at 12% 8%, rgba(255, 255, 255, 0.55), transparent 70%),
+    radial-gradient(640px 480px at 88% 92%, rgba(169, 116, 79, 0.07), transparent 70%),
+    radial-gradient(500px 380px at 78% 12%, rgba(255, 255, 255, 0.35), transparent 70%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------
+   Utilidades tipográficas
+   ------------------------------------------------------------ */
+
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 550;
+  color: var(--ink);
+  line-height: 1.12;
+}
+
+.caps {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+/* ------------------------------------------------------------
+   INDEX — panel del grupo
+   ------------------------------------------------------------ */
+
+.stage {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 4vw, 56px);
+}
+
+.holding-panel {
+  background: var(--panel);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-soft);
+  padding: clamp(44px, 6vw, 88px) clamp(28px, 6vw, 96px);
+  max-width: 1060px;
+  width: 100%;
+  text-align: center;
+}
+
+.holding-panel > .eyebrow { display: block; margin-bottom: 18px; }
+
+.holding-title {
+  font-size: clamp(2.4rem, 5.4vw, 4rem);
+  margin-bottom: 16px;
+}
+
+.holding-intro {
+  color: var(--ink-2);
+  max-width: 560px;
+  margin: 0 auto clamp(40px, 5vw, 64px);
+  font-size: 0.98rem;
+}
+
+/* Grid de tarjetas: auto-fit para que una tercera empresa
+   se acomode sola sin rediseñar. */
+.companies {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(330px, 100%), 1fr));
+  gap: clamp(20px, 3vw, 32px);
+  justify-items: stretch;
+}
+
+.company-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  background: var(--panel);
+  border: 1px solid rgba(23, 24, 26, 0.07);
+  border-radius: var(--radius-card);
+  padding: clamp(44px, 5vw, 60px) clamp(28px, 4vw, 44px) clamp(40px, 5vw, 52px);
+  text-decoration: none;
+  color: var(--ink);
+  box-shadow: 0 10px 30px -14px rgba(23, 24, 26, 0.14);
+  transition: transform 0.32s ease, box-shadow 0.32s ease;
+}
+
+.company-card:hover,
+.company-card:focus-visible {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lift);
+  outline: none;
+}
+
+.company-card .icon {
+  width: 42px;
+  height: 42px;
+  color: var(--accent);
+}
+
+.company-card .icon svg { width: 100%; height: 100%; }
+
+.company-name {
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+}
+
+.company-desc {
+  color: var(--ink-2);
+  font-size: 0.88rem;
+  max-width: 320px;
+  min-height: 2.7em;
+}
+
+/* Placa metálica — elemento firma */
+.plate {
+  width: min(200px, 70%);
+  height: 74px;
+  border-radius: 16px;
+  background: linear-gradient(165deg, #f6f7f8 0%, #f1f2f3 38%, #cfd2d5 72%, #a9adb1 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.85),
+    inset 0 -3px 8px rgba(23, 24, 26, 0.16),
+    0 1px 3px rgba(23, 24, 26, 0.1);
+  display: grid;
+  place-items: center;
+  padding: 12px 18px;
+}
+
+.plate img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.6));
+}
+
+/* Botón píldora */
+.btn {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #fff;
+  background: var(--ink);
+  border: none;
+  border-radius: 999px;
+  padding: 13px 30px;
+  cursor: pointer;
+  transition: background 0.32s ease;
+  margin-top: 6px;
+}
+
+.company-card:hover .btn,
+.btn:hover,
+.btn:focus-visible {
+  background: var(--accent-deep);
+  outline: none;
+}
+
+/* ------------------------------------------------------------
+   PÁGINAS DE DETALLE — mismo template para todas las empresas
+   ------------------------------------------------------------ */
+
+.detail-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(233, 231, 225, 0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(23, 24, 26, 0.06);
+}
+
+.detail-header .inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 16px clamp(20px, 4vw, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.32s ease;
+}
+
+.back-link .arrow { transition: transform 0.32s ease; }
+
+.back-link:hover { color: var(--accent-deep); }
+.back-link:hover .arrow { transform: translateX(-4px); }
+
+.header-brand {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.detail-main {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 48px) clamp(20px, 4vw, 32px) clamp(56px, 7vw, 96px);
+  display: grid;
+  gap: clamp(20px, 3vw, 28px);
+}
+
+.section {
+  background: var(--panel);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-soft);
+  padding: clamp(32px, 5vw, 56px) clamp(24px, 5vw, 64px);
+}
+
+/* Hero de la empresa */
+.detail-hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+}
+
+.detail-hero .eyebrow { display: block; margin-bottom: 14px; }
+
+.detail-title {
+  font-size: clamp(2.1rem, 4.6vw, 3.3rem);
+  margin-bottom: 12px;
+}
+
+.detail-tagline {
+  color: var(--ink-2);
+  max-width: 520px;
+  font-size: 0.98rem;
+}
+
+.detail-hero .plate { width: 220px; height: 86px; }
+
+/* Títulos de sección */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: clamp(22px, 3vw, 32px);
+}
+
+.section-label .eyebrow { color: var(--accent); }
+
+.section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(23, 24, 26, 0.08);
+}
+
+/* Cifras de trayectoria */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: clamp(18px, 3vw, 28px);
+}
+
+.stat .value {
+  font-family: var(--font-display);
+  font-weight: 550;
+  font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+  line-height: 1.1;
+}
+
+.stat .unit {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  display: block;
+  margin: 4px 0 6px;
+}
+
+.stat .detail { color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+
+.stats-note {
+  margin-top: clamp(20px, 3vw, 28px);
+  color: var(--ink-2);
+  font-size: 0.88rem;
+}
+
+/* Países */
+.countries {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: clamp(14px, 2.4vw, 22px);
+}
+
+.country {
+  border: 1px solid rgba(23, 24, 26, 0.08);
+  border-radius: 18px;
+  padding: 20px 22px;
+  display: grid;
+  gap: 4px;
+  transition: transform 0.32s ease, box-shadow 0.32s ease;
+}
+
+.country:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px -18px rgba(23, 24, 26, 0.25);
+}
+
+.country .flag-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.country .flag {
+  width: 22px;
+  height: 15px;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(23, 24, 26, 0.08);
+  flex: none;
+  display: grid;
+}
+
+.country .flag svg { width: 100%; height: 100%; display: block; }
+
+.country .name {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.country .city { color: var(--ink-2); font-size: 0.88rem; }
+.country .note { color: var(--muted); font-size: 0.8rem; }
+
+/* Catálogo */
+.catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: clamp(16px, 2.6vw, 24px);
+}
+
+.catalog-item {
+  border: 1px solid rgba(23, 24, 26, 0.08);
+  border-radius: 20px;
+  padding: clamp(24px, 3vw, 32px);
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  transition: transform 0.32s ease, box-shadow 0.32s ease;
+}
+
+.catalog-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px -18px rgba(23, 24, 26, 0.25);
+}
+
+.catalog-item h3 {
+  font-family: var(--font-display);
+  font-weight: 550;
+  font-size: 1.18rem;
+  line-height: 1.25;
+}
+
+.catalog-item p { color: var(--ink-2); font-size: 0.87rem; }
+
+.catalog-item ul { list-style: none; display: grid; gap: 8px; }
+
+.catalog-item li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.catalog-item li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 7px;
+  height: 1.4px;
+  background: var(--accent);
+}
+
+/* Representaciones (Heatcable) */
+.reps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: clamp(16px, 2.6vw, 24px);
+}
+
+.rep {
+  border: 1px solid rgba(23, 24, 26, 0.08);
+  border-radius: 20px;
+  padding: clamp(24px, 3vw, 32px);
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  transition: transform 0.32s ease, box-shadow 0.32s ease;
+}
+
+.rep:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px -18px rgba(23, 24, 26, 0.25);
+}
+
+.rep .icon { width: 34px; height: 34px; color: var(--accent); }
+.rep .icon svg { width: 100%; height: 100%; }
+
+.rep h3 {
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.rep .rubro { color: var(--accent-deep); font-size: 0.78rem; font-weight: 500; }
+.rep p { color: var(--ink-2); font-size: 0.86rem; }
+
+/* Footer simple */
+.detail-footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+  padding-bottom: 40px;
+}
+
+.detail-footer a { color: var(--ink-2); text-decoration: none; }
+.detail-footer a:hover { color: var(--accent-deep); }
+
+/* ------------------------------------------------------------
+   Responsive
+   ------------------------------------------------------------ */
+
+@media (max-width: 720px) {
+  .detail-hero { grid-template-columns: 1fr; }
+  .detail-hero .plate { justify-self: start; }
+  .company-card { border-radius: 72px; }
+}
+
+/* ------------------------------------------------------------
+   VISTA DEL GRUPO — tema premium oscuro con acento dorado.
+   Scope: body.home (las páginas de detalle mantienen el tema claro).
+   ------------------------------------------------------------ */
+
+.home {
+  /* En el lobby del grupo, el acento único pasa a ser oro envejecido */
+  --accent: #b8944e;
+  --accent-deep: #96763a;
+
+  background-color: #131215;
+  background-image: none;
+  color: #f2efe8;
+}
+
+/* Fondo animado: tres resplandores que derivan muy lentamente */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+}
+
+.aurora .a1 {
+  width: 58vmax;
+  height: 58vmax;
+  left: -18vmax;
+  top: -22vmax;
+  background: radial-gradient(circle, rgba(184, 148, 78, 0.28), transparent 65%);
+  animation: drift-a 26s ease-in-out infinite alternate;
+}
+
+.aurora .a2 {
+  width: 52vmax;
+  height: 52vmax;
+  right: -16vmax;
+  bottom: -20vmax;
+  background: radial-gradient(circle, rgba(169, 116, 79, 0.22), transparent 65%);
+  animation: drift-b 34s ease-in-out infinite alternate;
+}
+
+.aurora .a3 {
+  width: 44vmax;
+  height: 44vmax;
+  left: 30vw;
+  top: 30vh;
+  background: radial-gradient(circle, rgba(242, 239, 232, 0.06), transparent 65%);
+  animation: drift-c 44s ease-in-out infinite alternate;
+}
+
+@keyframes drift-a {
+  to { transform: translate(14vmax, 10vmax) scale(1.18); }
+}
+
+@keyframes drift-b {
+  to { transform: translate(-12vmax, -9vmax) scale(1.12); }
+}
+
+@keyframes drift-c {
+  to { transform: translate(-10vmax, 8vmax) scale(1.25); }
+}
+
+.home .stage {
+  position: relative;
+  z-index: 1;
+}
+
+.home .holding-panel {
+  max-width: 1180px;
+  border: 1px solid rgba(184, 148, 78, 0.28);
+  box-shadow:
+    0 60px 140px -40px rgba(0, 0, 0, 0.65),
+    0 20px 50px -25px rgba(0, 0, 0, 0.5);
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* fill-mode backwards: al terminar la entrada, el hover de elevación
+   recupera el control del transform. */
+.home .company-card {
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 110ms + 250ms);
+}
+
+/* ------------------------------------------------------------
+   Tarjetas de empresa en sintonía con el sistema de bordes.
+   Mismo lenguaje que las esquinas y el halo:
+   - mismo acento: rgba(184, 148, 78, …)  (#B8944E)
+   - mismo timing: 0.4s ease-out
+   - mismo gesto: hairline tenue en reposo (eco del 0.18 de las
+     esquinas) que se ilumina al hover, más un resplandor dorado
+     contenido que replica el halo perimetral dentro de la tarjeta.
+   Solo cambian borde y sombra: el contenido (nombres, logos,
+   descripciones) no se toca, la legibilidad queda intacta.
+   ------------------------------------------------------------ */
+
+.home .company-card {
+  border-color: rgba(184, 148, 78, 0.16);
+  transition:
+    transform 0.4s ease-out,
+    box-shadow 0.4s ease-out,
+    border-color 0.4s ease-out;
+}
+
+.home .company-card:hover,
+.home .company-card:focus-visible {
+  border-color: rgba(184, 148, 78, 0.55);
+  box-shadow:
+    0 30px 60px -20px rgba(19, 18, 21, 0.5),
+    0 0 44px -10px rgba(184, 148, 78, 0.28);
+}
+
+/* El botón acompaña con el mismo timing del sistema */
+.home .btn {
+  transition: background 0.4s ease-out;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora span { animation: none; }
+  .home .holding-panel,
+  .home .company-card { animation: none; }
+}
+
+/* ------------------------------------------------------------
+   INTERACCIÓN DE BORDES (solo index) — acentos de esquina + halo
+   perimetral que siguen al cursor. Capa fija por encima del
+   contenido, sin bloquear clics (pointer-events: none).
+   El JS que la controla vive en index.html.
+   ------------------------------------------------------------ */
+
+.edge-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  /* Variables actualizadas por JS vía requestAnimationFrame */
+  --mx: 50vw;          /* posición X del cursor */
+  --my: 50vh;          /* posición Y del cursor */
+  --halo: 0;           /* intensidad del halo (0 en el centro, 1 en los bordes) */
+}
+
+/* Halo perimetral: gradiente radial centrado en el cursor.
+   mix-blend-mode: screen → sobre el panel blanco no altera el texto
+   (blanco permanece blanco); sobre el fondo oscuro emite un brillo dorado. */
+.edge-fx .halo {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    380px circle at var(--mx) var(--my),
+    rgba(184, 148, 78, 0.30),
+    rgba(184, 148, 78, 0.10) 45%,
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+  opacity: var(--halo);
+  transition: opacity 0.25s ease-out;
+}
+
+/* Acentos de esquina: marcos en "L", como encuadre de cámara */
+.edge-fx .corner {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border: 0 solid var(--accent, #b8944e);
+  opacity: 0.18;
+  transition: opacity 0.4s ease-out, width 0.4s ease-out, height 0.4s ease-out;
+}
+
+.edge-fx .c-tl { top: 22px; left: 22px; border-top-width: 2px; border-left-width: 2px; }
+.edge-fx .c-tr { top: 22px; right: 22px; border-top-width: 2px; border-right-width: 2px; }
+.edge-fx .c-bl { bottom: 22px; left: 22px; border-bottom-width: 2px; border-left-width: 2px; }
+.edge-fx .c-br { bottom: 22px; right: 22px; border-bottom-width: 2px; border-right-width: 2px; }
+
+/* La esquina más cercana al cursor se ilumina y se extiende */
+.edge-fx .corner.is-near {
+  opacity: 1;
+  width: 60px;
+  height: 60px;
+}
+
+/* En dispositivos táctiles o sin hover, el efecto no aporta: se oculta.
+   (El JS también evita registrar los listeners en ese caso.) */
+@media (hover: none), (pointer: coarse) {
+  .edge-fx { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edge-fx .halo,
+  .edge-fx .corner { transition: none; }
+}
